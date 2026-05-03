@@ -9,14 +9,7 @@
 	--profile-shadow: 0 22px 44px rgba(58, 10, 111, 0.22);
 }
 
-html,
-body {
-	min-height: 100%;
-	overflow: hidden;
-}
-
-body {
-	margin: 0;
+.profile-page {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -25,7 +18,6 @@ body {
 	background: linear-gradient(180deg, #ffffff 0%, #faf8ff 100%);
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	color: var(--profile-text);
-	overflow: hidden;
 }
 
 .profile-header {

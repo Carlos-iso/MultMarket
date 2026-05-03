@@ -36,12 +36,12 @@ function bindElements() {
 	filterCategory = document.getElementById("filter-category");
 	filterPriceMin = document.getElementById("filter-price-min");
 	filterPriceMax = document.getElementById("filter-price-max");
-	btnApply = document.getElementById("btn-apply-filters");
-	btnClear = document.getElementById("btn-clear-filters");
+	btnApply = document.getElementById("btn-apply-filter");
+	btnClear = document.getElementById("btn-clear-filter");
 	btnFilterMobile = document.getElementById("btn-filter-mobile");
-	openBtn = document.getElementById("btn-open-filter");
-	closeBtn = document.getElementById("btn-close-filter");
-	filterMenu = document.getElementById("filter-drawer");
+	openBtn = document.getElementById("openBtn");
+	closeBtn = document.getElementById("closeBtn");
+	filterMenu = document.getElementById("filterMenu");
 	overlay = document.getElementById("overlay");
 }
 

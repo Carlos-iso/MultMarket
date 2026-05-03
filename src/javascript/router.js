@@ -22,6 +22,26 @@ async function loadHeader(page) {
 	}
 }
 
+function updatePageStyle(page) {
+	const existingLink = document.querySelector("link[data-page-style]");
+	if (existingLink) {
+		existingLink.remove();
+	}
+
+	const pageStyles = {
+		profile: "/src/css/profile.css",
+	};
+
+	const stylePath = pageStyles[page];
+	if (stylePath) {
+		const link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = stylePath;
+		link.dataset.pageStyle = page;
+		document.head.appendChild(link);
+	}
+}
+
 async function loadApp(page) {
 	const path = components[page];
 	if (!path) {
@@ -29,6 +49,7 @@ async function loadApp(page) {
 		return;
 	}
 	try {
+		updatePageStyle(page);
 		const response = await fetch(path);
 		const html = await response.text();
 		document.querySelector("#app").innerHTML = html;

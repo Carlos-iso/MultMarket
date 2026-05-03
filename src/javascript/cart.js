@@ -80,3 +80,7 @@ async function openCart() {
 	setupCartEvents();
 	renderCarrinho();
 }
+
+async function openProfile() {
+	await loadApp("profile");
+}

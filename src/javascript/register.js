@@ -40,21 +40,26 @@ function validarSenha() {
 	} else {
 		passwordInput.style.borderColor = '';
 		confirmPasswordInput.style.borderColor = '';
+		passwordInput.setCustomValidity('');
+		confirmPasswordInput.setCustomValidity('');
 		return true;
 	}
 }
 
 function tamanhoSenhaValido() {
-	const passwordInput = document.getElementById('reg-password').value;
-	const confirmPasswordInput = document.getElementById('reg-confirm-password').value;
+	const passwordInputElement = document.getElementById('reg-password');
+	const passwordValue = passwordInputElement?.value || '';
 
-	if (passwordInput.length < 6 || passwordInput.length > 8) {
+	if (passwordValue.length < 6 || passwordValue.length > 8) {
 		exibirMensagem('A senha deve conter entre 6 e 8 caracteres.', 'erro');
-		passwordInput.setCustomValidity('A senha deve conter entre 6 e 8 caracteres.');
-		passwordInput.style.borderColor = '#ff4d4d';
+		passwordInputElement?.setCustomValidity('A senha deve conter entre 6 e 8 caracteres.');
+		if (passwordInputElement) passwordInputElement.style.borderColor = '#ff4d4d';
 		return false;
 	} else {
-		passwordInput.style.borderColor = '';
+		if (passwordInputElement) {
+			passwordInputElement.style.borderColor = '';
+			passwordInputElement.setCustomValidity('');
+		}
 		return true;
 	}
 }
@@ -63,12 +68,13 @@ function tamanhoSenhaValido() {
 function validarFormulario() {
 	const emailValido = validarEmailNoCampo();
 	const senhaValida = validarSenha();
+	const tamanhoValido = tamanhoSenhaValido();
 
-
-	if( !emailValido || !senhaValida) {
-		return;
+	if (!emailValido || !senhaValida || !tamanhoValido) {
+		return false;
 	}
-	
+
+	return true;
 }
 
 function transformarEmLista(valor) {
