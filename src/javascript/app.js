@@ -13,4 +13,8 @@ async function initApp() {
 	initCatalog(); // MUITO IMPORTANTE
 }
 
+function goHome() {
+	window.location.href = "/";
+}
+
 initApp();
