@@ -1,0 +1,17 @@
+/* Footer do Catalog */
+:root {
+    --roxo: #4a149c;
+    --roxo-médio: #6a1b9a;
+    --roxo-claro: #f3e5f5;
+
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--roxo-claro);
+  color: var(--roxo);
+  text-align: center;
+  padding: 12px 0;
+}

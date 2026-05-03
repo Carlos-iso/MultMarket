@@ -1,0 +1,63 @@
+<!-- Catalog funciona mas tem que arrumar algum detalhes como o filtro que não abre o outros detalhes visuais-->
+
+<button id="openBtn" class="btn-primary">
+	<i class="fas fa-sliders-h"></i> FILTRAR PRODUTOS
+</button>
+
+<div id="overlay" class="overlay"></div>
+
+<div id="filterMenu" class="filter-side-menu">
+	<div class="menu-header">
+		<h2>Filtros</h2>
+		<button id="closeBtn">&times;</button>
+	</div>
+
+	<div class="menu-content">
+		<div class="filter-group">
+			<label class="filter-label">Categoria</label>
+			<select id="filter-category" class="filter-select">
+				<option value="">Todas</option>
+			</select>
+		</div>
+
+		<div class="filter-group">
+			<label class="filter-label">Preço mínimo</label>
+			<input
+				type="number"
+				id="filter-price-min"
+				class="filter-input"
+				placeholder="R$ 0"
+				min="0"
+			/>
+		</div>
+
+		<div class="filter-group">
+			<label class="filter-label">Preço máximo</label>
+			<input
+				type="number"
+				id="filter-price-max"
+				class="filter-input"
+				placeholder="R$ 9999"
+				min="0"
+			/>
+		</div>
+
+		<button class="btn-apply-filter" id="btn-apply-filter">
+			<i class="fas fa-check"></i> Aplicar
+		</button>
+		<button class="btn-clear-filter" id="btn-clear-filter">
+			<i class="fas fa-trash"></i> Limpar filtros
+		</button>
+	</div>
+</div>
+
+<main class="display-container" id="display-container">
+	<div class="products-grid" id="products-grid">
+		<div class="loading-state">
+			<i class="fas fa-spinner fa-spin"></i>
+			<p>Carregando produtos...</p>
+		</div>
+	</div>
+	<nav class="pagination" id="pagination" aria-label="Paginação"></nav>
+</main>
+

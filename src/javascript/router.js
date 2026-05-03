@@ -1,52 +1,49 @@
 const components = {
 	header: "/pages/header.html",
-	home: "/pages/home.html",
+	cart: "/pages/cart.html",
+	home: "/index.html",
+	catalog: "/pages/catalog.html",
 	profile: "/pages/profile.html",
-	settings: "/pages/settings.html",
+	footer: "/pages/footer.html",
 };
 
-async function navigate(page) {
+async function loadHeader(page) {
 	const path = components[page];
-
 	if (!path) {
-		document.getElementById("app").innerHTML = "<h1>Página não encontrada</h1>";
+		document.querySelector("#header").innerHTML = "<h1>Página não encontrada</h1>";
 		return;
 	}
-
 	try {
 		const response = await fetch(path);
 		const html = await response.text();
-
-		document.getElementById("app").innerHTML = html;
-
-		// Atualiza URL sem recarregar
-		window.history.pushState({}, "", `#${page}`);
-	} catch (error) {
-		console.error("Erro ao carregar página:", error);
-	}
-}
-async function loadHeader() {
-	try {
-		const response = await fetch("/components/header.html");
-		const html = await response.text();
-		document.getElementById("header").innerHTML = html;
+		document.querySelector("#header").innerHTML = html;
 	} catch (error) {
 		console.error("Erro ao carregar header:", error);
 	}
 }
 
-async function loadFooter() {
+async function loadApp(page) {
+	const path = components[page];
+	if (!path) {
+		document.querySelector("#app").innerHTML = "<h1>Página não encontrada</h1>";
+		return;
+	}
 	try {
-		const response = await fetch("/components/footer.html");
+		const response = await fetch(path);
 		const html = await response.text();
-		document.getElementById("footer").innerHTML = html;
+		document.querySelector("#app").innerHTML = html;
+	} catch (error) {
+		console.error("Erro ao carregar página:", error);
+	}
+}
+
+async function loadFooter(page) {
+	const path = components[page];
+	try {
+		const response = await fetch(path);
+		const html = await response.text();
+		document.querySelector("#footer").innerHTML = html;
 	} catch (error) {
 		console.error("Erro ao carregar footer:", error);
 	}
 }
-
-// Carrega header e footer ao iniciar
-window.addEventListener("load", () => {
-	loadHeader();
-	loadFooter();
-});
