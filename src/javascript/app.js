@@ -13,4 +13,10 @@ async function initApp() {
 	initCatalog(); // MUITO IMPORTANTE
 }
 
+function goHome() {
+	document.querySelector('#footer').style.display = ''; // ← mostra o footer
+    openCatalog();
+	window.location.href = "/";
+}
+
 initApp();

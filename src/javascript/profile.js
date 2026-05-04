@@ -150,8 +150,8 @@ async function updateProfile(event) {
   }
   
   try {
-    // Verificar disponibilidade de email apenas se foi alterado
-    const currentEmail = ""; // (opcional) você pode persistir o email atual ao carregar perfil para comparar
+  
+    const currentEmail = ""; 
     if (email && email !== currentEmail) {
       const availRes = await fetch(`${URL_BASE}/users/is-available`, {
         method: "POST",
@@ -167,7 +167,6 @@ async function updateProfile(event) {
       }
     }
 
-    // Monta corpo apenas com campos a atualizar
     const body = {};
     if (name) body.name = name;
     if (email) body.email = email;
@@ -183,7 +182,7 @@ async function updateProfile(event) {
 
     if (response.ok) {
       const updated = await response.json();
-      // Reaplica os valores na UI
+      
       fillProfile(updated);
 	displayMessage("Profile updated successfully.", "sucesso");
     } else {
