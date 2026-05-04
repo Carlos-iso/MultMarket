@@ -5,6 +5,10 @@ const components = {
 	catalog: "/pages/catalog.html",
 	profile: "/pages/profile.html",
 	footer: "/pages/footer.html",
+	"footer-cart": "/pages/footer-cart.html",
+	details: "/pages/details.html",
+	payment: "/pages/payment.html",
+	"footer-payment": "/pages/footer-payment.html",
 };
 
 async function loadHeader(page) {

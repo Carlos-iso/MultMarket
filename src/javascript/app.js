@@ -14,6 +14,8 @@ async function initApp() {
 }
 
 function goHome() {
+	document.querySelector('#footer').style.display = ''; // ← mostra o footer
+    openCatalog();
 	window.location.href = "/";
 }
 
