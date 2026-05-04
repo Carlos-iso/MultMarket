@@ -1,41 +1,6 @@
 <!-- Profile está totalmente quebrado js e css, não dá nem para importar no index -->
 <div class="profile-page">
-	<header class="profile-header">
-		<img
-			src="../src/assets/imgs/Logo 1.png"
-			alt="MultiMarket"
-			class="profile-logo"
-		/>
 
-	<!-- Barra de busca -->
-	<form class="profile-searchbar" role="search">
-		<input
-			type="search"
-			class="profile-search"
-			placeholder="Buscar"
-			aria-label="Buscar"
-		/>
-
-		<!-- Botão de pesquisa -->
-		<button type="submit" class="profile-search-button" aria-label="Pesquisar">
-			<svg viewBox="0 0 24 24" aria-hidden="true">
-				<path
-					d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm0-2a8 8 0 1 0 4.9 14.3l4.4 4.4 1.4-1.4-4.4-4.4A8 8 0 0 0 10 2Z"
-				></path>
-			</svg>
-		</button>
-	</form>
-
-	<!-- Ícone do usuário -->
-	<button
-		type="button"
-		class="profile-top-icon"
-		aria-label="Conta"
-		onclick="Conta()"
-	>
-		<img src="../src/assets/icons/sharp-person.png" alt="" />
-	</button>
-</header>
 
 <!-- Conteúdo principal -->
 <main class="profile-main">
@@ -54,29 +19,53 @@
 
 		<!-- Formulário de edição do perfil -->
 		<form class="profile-form" id="profile-form">
-			<label class="profile-field">
-				<span>ID</span>
-				<input type="text" id="profile-id" readonly />
-				<br />
-			</label>
 
-			<label class="profile-field">
-				<span>Nome</span>
-				<input type="text" id="profile-name-field" readonly />
-				<br />
-			</label>
+			<div class="input-box">
+				<label class="profile-field">
+					<span>ID</span>
+					<input type="text" id="profile-id" readonly />
+					
+				</label>
+			</div>
 
-			<label class="profile-field profile-field--full">
-				<span>E-mail</span>
-				<input type="email" id="profile-email-field" readonly />
-				<br />
-			</label>
+			<div class="input-box">
+				<label class="profile-field">
+					<span>Username</span>
+					<input type="text" id="profile-name-field" readonly />
 
-			<label class="profile-field profile-field--full">
-				<span>Role</span>
-				<input type="text" id="profile-role-field" readonly />
-				<br />
-			</label>
+				</label>
+
+			</div>
+
+			<div class="input-box">
+
+				<label class="profile-field profile-field--full">
+					<span>E-mail</span>
+					<input type="email" id="profile-email-field" readonly />
+
+				</label>
+
+			</div>
+
+			<div class="input-box">
+
+				<label class="profile-field profile-field--full">
+					<span>Password</span>
+					<input type="password" id="profile-password-field" readonly />
+
+				</label>
+			</div>
+
+
+			<div class="input-box">
+				<label class="profile-field profile-field--full">
+					<span>Role</span>
+					<input type="text" id="profile-role-field" readonly />
+				</label>
+
+			</div>
+
+			
 		</form>
 
 		<!-- Mensagem de feedback -->
@@ -91,6 +80,7 @@
 		<div class="profile-actions">
 			<button
 				type="button"
+				onclick="updateProfile()"
 				id="profile-refresh"
 				class="profile-button profile-button--confirm"
 			>
@@ -98,6 +88,7 @@
 			</button>
 			<button
 				type="button"
+				onclick="doLogout()"
 				id="profile-logout"
 				class="profile-button profile-button--logout"
 			>
@@ -126,14 +117,14 @@
 				<img src="../src/assets/icons/categorias.svg" alt="Categorias" />
 			</button>
 
-			<button
+			<!-- <button
 				type="button"
 				id="nav-perfil"
 				class="profile-perfil"
 				aria-label="Perfil"
 			>
 				<img src="../src/assets/icons/perfil.svg" alt="Perfil" />
-			</button>
+			</button> -->
 		</div>
 	</section>
 </main>

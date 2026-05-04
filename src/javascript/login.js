@@ -2,7 +2,7 @@ const URL_BASE = "https://api.escuelajs.co/api/v1";
 
 // -*-*-*- FUNÇÃO DE EXIBIÇÃO DE MENSAGEM *-*-*-*-
 
-function exibirMensagem(texto, tipo = "erro") {
+function displayMessage(texto, tipo = "erro") {
 	const msgElement = document.getElementById("error-message");
 
 	if (msgElement) {
@@ -16,15 +16,15 @@ function exibirMensagem(texto, tipo = "erro") {
 	}
 }
 
-function normalizarEmail(email) {
+function normalizeEmail(email) {
 	return email.trim().toLowerCase();
 }
 
-function ehEmailValido(email) {
+function isEmailValid(email) {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
 
-async function renovarTokens() {
+async function renewTokens() {
 	const refreshToken = localStorage.getItem("refresh_token");
 
 	if (!refreshToken) {
@@ -58,8 +58,8 @@ async function renovarTokens() {
 	}
 }
 
-//função para ocultar ou mostrar a senha, ainda em desenvolvimento com icones
-function mostarsenha() {
+// function to toggle password visibility
+function togglePasswordVisibility() {
 	let password = document.getElementById("password");
 	let eyeicon = document.getElementById("eyeicon");
 
@@ -77,7 +77,7 @@ function mostarsenha() {
 		}
 	};
 }
-mostarsenha();
+togglePasswordVisibility();
 
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
@@ -87,10 +87,10 @@ if (loginForm) {
 		.addEventListener("submit", async (event) => {
 			event.preventDefault();
 
-			const email = normalizarEmail(document.getElementById("log-email").value);
+			const email = normalizeEmail(document.getElementById("log-email").value);
 
-			if (!ehEmailValido(email)) {
-				exibirMensagem("Informe um e-mail válido.", "erro");
+			if (!isEmailValid(email)) {
+				displayMessage("Please enter a valid email.", "erro");
 				return;
 			}
 
@@ -115,7 +115,7 @@ if (loginForm) {
 					localStorage.setItem("access_token", data.access_token);
 					localStorage.setItem("refresh_token", data.refresh_token);
 
-					exibirMensagem("Login realizado! Token salvo.", "sucesso");
+					displayMessage("Login successful! Token saved.", "sucesso");
 
 					console.log("Token JWT:", data.access_token); // lembrar de apagar depois
 					console.log("Refresh Token:", data.refresh_token); // lembrar de apagar depois
@@ -123,22 +123,22 @@ if (loginForm) {
 					// Redirecionar para a página de perfil ou dashboard
 					window.location.href = "/index.html";
 				} else {
-					exibirMensagem("Falha no login: Verifique suas credenciais.", "erro");
+					displayMessage("Login failed: Check your credentials.", "erro");
 					console.error("Falha no login:", data.message); // lembrar de apagar depois
 				}
 			} catch (error) {
-				exibirMensagem("Erro no servidor ao tentar login.", "erro");
+				displayMessage("Server error while attempting login.", "erro");
 				console.error("Erro no login:", error); // lembrar de apagar depois
 			}
 		});
 }
 
 // --- BUSCAR PERFIL (ROTA PROTEGIDA) ---
-async function buscarDadosUsuario() {
+async function fetchUserData() {
 	const token = localStorage.getItem("access_token");
 
 	if (!token) {
-		fazerLogout();
+		doLogout();
 		return;
 	}
 
@@ -152,38 +152,38 @@ async function buscarDadosUsuario() {
 			const user = await response.json();
 			localStorage.setItem("userId", user.id);
 
-			// Atualiza o nome na interface
+			// update UI name
 			const welcomeMsg = document.getElementById("welcome-message");
-			if (welcomeMsg) welcomeMsg.innerHTML = `Olá, ${user.name}!`;
+			if (welcomeMsg) welcomeMsg.innerHTML = `Hello, ${user.name}!`;
 
-			// Atualiza foto se existir algum avatar
+			// update avatar if exists
 			const avatarImg = document.getElementById("user-avatar");
 			if (avatarImg) avatarImg.src = user.avatar;
 		} else if (response.status === 401 || response.status === 403) {
-			const renovado = await renovarTokens();
+			const renewed = await renewTokens();
 
-			if (renovado) {
-				await buscarDadosUsuario();
+			if (renewed) {
+				await fetchUserData();
 				return;
 			}
 
-			exibirMensagem(
-				"Sessão expirada ou inválida. Faça login novamente.",
+			displayMessage(
+				"Session expired or invalid. Please log in again.",
 				"erro",
 			);
-			fazerLogout();
+			doLogout();
 		} else {
-			exibirMensagem("Erro ao carregar perfil. Tente novamente.", "erro");
+			displayMessage("Error loading profile. Please try again.", "erro");
 		}
 	} catch (error) {
-		exibirMensagem("Erro ao carregar perfil. Tente novamente.", "erro");
-		console.error("Erro ao carregar perfil:", error);
+		displayMessage("Error loading profile. Please try again.", "erro");
+		console.error("Error loading profile:", error);
 	}
 }
 
 // -*-*-*- FUNÇÃO DE LOGOUT COM LIMPEZA DE DADOS *-*-*-*-
 
-function fazerLogout() {
+function doLogout() {
 	localStorage.removeItem("access_token");
 	localStorage.removeItem("refresh_token");
 	localStorage.removeItem("userId");
@@ -200,6 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("user-avatar");
 
 	if (profileElements) {
-		buscarDadosUsuario();
+		fetchUserData();
 	}
 });

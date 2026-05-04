@@ -3,7 +3,7 @@ const STORAGE_REGISTERED_USERS_KEY = 'registered_users';
 
 // -*-*-*- FUNÇÃO DE EXIBIÇÃO DE MENSAGEM *-*-*-*-
 
-function exibirMensagem(texto, tipo = 'erro') {
+function displayMessage(texto, tipo = 'erro') {
 	const msgElement = document.getElementById('error-message');
 
 	if (msgElement){
@@ -13,25 +13,59 @@ function exibirMensagem(texto, tipo = 'erro') {
 
 		setTimeout(() => {
 			msgElement.style.display = 'none';
-		}, 3000); // Rever o tempo de exibição da mensagem depois
+		}, 3000); 
 	}
 }
 
-function normalizarEmail(email) {
+function normalizeEmail(email) {
 	return email.trim().toLowerCase();
 }
 
-function ehEmailValido(email) {
+function isEmailValid(email) {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
 
-function validarSenha() {	
+
+function togglePasswordVisibility() {
+	const password = document.getElementById("reg-password");
+	const eyeicon = document.getElementById("eyeicon");
+	const confirmPassword = document.getElementById("reg-confirm-password");
+	const eyeiconconfirm = document.getElementById("eyeicon-confirm");
+
+	
+	if (eyeicon && password) {
+		eyeicon.addEventListener('click', () => {
+			if (password.type === 'password') {
+				password.type = 'text';
+				eyeicon.src = '../src/assets/icons/eye-open.svg';
+			} else {
+				password.type = 'password';
+				eyeicon.src = '../src/assets/icons/eye-close.svg';
+			}
+		});
+	}
+
+	if (eyeiconconfirm && confirmPassword) {
+		eyeiconconfirm.addEventListener('click', () => {
+			if (confirmPassword.type === 'password') {
+				confirmPassword.type = 'text';
+				eyeiconconfirm.src = '../src/assets/icons/eye-open.svg';
+			} else {
+				confirmPassword.type = 'password';
+				eyeiconconfirm.src = '../src/assets/icons/eye-close.svg';
+			}
+		});
+	}
+}
+togglePasswordVisibility();
+
+function validatePassword() {    
 
 	let passwordInput = document.getElementById('reg-password');
 	let confirmPasswordInput = document.getElementById('reg-confirm-password');
-	
+    
 	if (passwordInput.value !== confirmPasswordInput.value) {
-		exibirMensagem('As senhas não coincidem. Por favor, verifique.', 'erro');
+		displayMessage('As senhas não coincidem. Por favor, verifique.', 'erro');
 		confirmPasswordInput.setCustomValidity('As senhas não coincidem. Por favor, verifique.');
 
 		passwordInput.style.borderColor = '#ff4d4d';
@@ -46,12 +80,14 @@ function validarSenha() {
 	}
 }
 
-function tamanhoSenhaValido() {
+
+
+function isPasswordLengthValid() {
 	const passwordInputElement = document.getElementById('reg-password');
 	const passwordValue = passwordInputElement?.value || '';
 
 	if (passwordValue.length < 6 || passwordValue.length > 8) {
-		exibirMensagem('A senha deve conter entre 6 e 8 caracteres.', 'erro');
+		displayMessage('A senha deve conter entre 6 e 8 caracteres.', 'erro');
 		passwordInputElement?.setCustomValidity('A senha deve conter entre 6 e 8 caracteres.');
 		if (passwordInputElement) passwordInputElement.style.borderColor = '#ff4d4d';
 		return false;
@@ -65,19 +101,19 @@ function tamanhoSenhaValido() {
 }
 
 
-function validarFormulario() {
-	const emailValido = validarEmailNoCampo();
-	const senhaValida = validarSenha();
-	const tamanhoValido = tamanhoSenhaValido();
+function validateForm() {
+	const emailValid = validateEmailField();
+	const passwordValid = validatePassword();
+	const lengthValid = isPasswordLengthValid();
 
-	if (!emailValido || !senhaValida || !tamanhoValido) {
+	if (!emailValid || !passwordValid || !lengthValid) {
 		return false;
 	}
 
 	return true;
 }
 
-function transformarEmLista(valor) {
+function toArray(valor) {
 	if (!valor) {
 		return [];
 	}
@@ -89,7 +125,7 @@ function transformarEmLista(valor) {
 	return [valor].filter(Boolean);
 }
 
-function lerStorageJSON(chave) {
+function readStorageJSON(chave) {
 	try {
 		return JSON.parse(localStorage.getItem(chave));
 	} catch (error) {
@@ -98,14 +134,14 @@ function lerStorageJSON(chave) {
 	}
 }
 
-function obterUsuariosRegistrados() {
-	const usuariosRegistrados = transformarEmLista(lerStorageJSON(STORAGE_REGISTERED_USERS_KEY));
+function getRegisteredUsers() {
+	const usuariosRegistrados = toArray(readStorageJSON(STORAGE_REGISTERED_USERS_KEY));
 
 	if (usuariosRegistrados.length > 0) {
 		return usuariosRegistrados;
 	}
 
-	const usuariosLegados = transformarEmLista(lerStorageJSON('users'));
+	const usuariosLegados = toArray(readStorageJSON('users'));
 
 	if (usuariosLegados.length > 0) {
 		localStorage.setItem(STORAGE_REGISTERED_USERS_KEY, JSON.stringify(usuariosLegados));
@@ -115,15 +151,15 @@ function obterUsuariosRegistrados() {
 	return [];
 }
 
-function salvarUsuarioRegistrado(usuario) {
-	const emailNormalizado = normalizarEmail(usuario?.email || '');
+function saveRegisteredUser(usuario) {
+	const emailNormalizado = normalizeEmail(usuario?.email || '');
 
 	if (!emailNormalizado) {
 		return;
 	}
 
-	const usuariosRegistrados = obterUsuariosRegistrados().filter((item) => {
-		return normalizarEmail(item?.email || '') !== emailNormalizado;
+	const usuariosRegistrados = getRegisteredUsers().filter((item) => {
+		return normalizeEmail(item?.email || '') !== emailNormalizado;
 	});
 
 	usuariosRegistrados.push({
@@ -134,15 +170,15 @@ function salvarUsuarioRegistrado(usuario) {
 	localStorage.setItem(STORAGE_REGISTERED_USERS_KEY, JSON.stringify(usuariosRegistrados));
 }
 
-function emailExisteEmUsuarios(usuarios, email) {
-	const emailNormalizado = normalizarEmail(email);
+function emailExistsInUsers(usuarios, email) {
+	const emailNormalizado = normalizeEmail(email);
 
-	return transformarEmLista(usuarios).some((usuario) => {
-		return normalizarEmail(usuario?.email || '') === emailNormalizado;
+	return toArray(usuarios).some((usuario) => {
+		return normalizeEmail(usuario?.email || '') === emailNormalizado;
 	});
 }
 
-async function buscarUsuariosNaApi() {
+async function fetchUsersFromApi() {
 	try {
 		const response = await fetch(`${URL_BASE}/users?offset=0&limit=1000`);
 
@@ -157,7 +193,7 @@ async function buscarUsuariosNaApi() {
 
 		return {
 			ok: true,
-			users: transformarEmLista(data)
+			users: toArray(data)
 		};
 	} catch (error) {
 		console.error('Erro ao buscar usuários da API:', error);
@@ -171,11 +207,11 @@ async function buscarUsuariosNaApi() {
 
 
 // -*-*-*- VERIFICAÇÃO DE DISPONIBILIDADE DE E-MAIL *-*-*-*-
-async function verificarDisponibilidadeEmail(email) {
-	const emailNormalizado = normalizarEmail(email);
-	const usuariosRegistrados = obterUsuariosRegistrados();
+async function checkEmailAvailability(email) {
+	const emailNormalizado = normalizeEmail(email);
+	const usuariosRegistrados = getRegisteredUsers();
 
-	if (emailExisteEmUsuarios(usuariosRegistrados, emailNormalizado)) {
+	if (emailExistsInUsers(usuariosRegistrados, emailNormalizado)) {
 		return {
 			ok: true,
 			isAvailable: false
@@ -208,7 +244,7 @@ async function verificarDisponibilidadeEmail(email) {
 			}
 
 			// Fallback para contornar respostas inconsistentes da API pública.
-			const { ok, users } = await buscarUsuariosNaApi();
+			const { ok, users } = await fetchUsersFromApi();
 
 			if (!ok) {
 				return {
@@ -219,7 +255,7 @@ async function verificarDisponibilidadeEmail(email) {
 
 			return {
 				ok: true,
-				isAvailable: !emailExisteEmUsuarios(users, emailNormalizado)
+				isAvailable: !emailExistsInUsers(users, emailNormalizado)
 			};
 		}
 
@@ -237,7 +273,7 @@ async function verificarDisponibilidadeEmail(email) {
 }
 
 
-function limparEstadoCampoEmail() {
+function clearEmailFieldState() {
 	if (!emailInput) {
 		return;
 	}
@@ -248,7 +284,7 @@ function limparEstadoCampoEmail() {
 
 
 
-function atualizarEstadoCampoEmail({
+function updateEmailFieldState({
 	mensagem = '',
 	tipo = 'erro',
 	borderColor = '',
@@ -263,7 +299,7 @@ function atualizarEstadoCampoEmail({
 	emailInput.setCustomValidity(customValidity);
 
 	if (mensagem) {
-		exibirMensagem(mensagem, tipo);
+		displayMessage(mensagem, tipo);
 	}
 
 	if (reportValidity) {
@@ -272,22 +308,22 @@ function atualizarEstadoCampoEmail({
 }
 
 // -*-*-*- FUNÇÃO DE VALIDAÇÃO DE E-MAIL NO CAMPO DE REGISTRO *-*-*-*-
-async function validarEmailNoCampo() {
+async function validateEmailField() {
 	if (!emailInput) {
 		return true;
 	}
 
-	const email = normalizarEmail(emailInput.value);
+	const email = normalizeEmail(emailInput.value);
 
 	if (!email) {
 		return true;
 	}
 
-	limparEstadoCampoEmail();
+	clearEmailFieldState();
 
-	// Validção de formato de e-mail
-	if (!ehEmailValido(email)) {
-		atualizarEstadoCampoEmail({
+	// email format validation
+	if (!isEmailValid(email)) {
+		updateEmailFieldState({
 			mensagem: 'Informe um e-mail válido.',
 			tipo: 'erro',
 			borderColor: '#ff4d4d',
@@ -300,10 +336,10 @@ async function validarEmailNoCampo() {
 	emailInput.value = email;
 
 	try {
-		const { ok, isAvailable } = await verificarDisponibilidadeEmail(email);
+		const { ok, isAvailable } = await checkEmailAvailability(email);
 
 		if (!ok) {
-			atualizarEstadoCampoEmail({
+			updateEmailFieldState({
 				mensagem: 'Não foi possível verificar a disponibilidade do e-mail agora. Tente novamente.',
 				tipo: 'erro'
 			});
@@ -311,7 +347,7 @@ async function validarEmailNoCampo() {
 		}
 
 		if (!isAvailable) {
-			atualizarEstadoCampoEmail({
+			updateEmailFieldState({
 				mensagem: 'Este e-mail já está cadastrado. Use outro e-mail.',
 				tipo: 'erro',
 				borderColor: '#ff4d4d',
@@ -321,7 +357,7 @@ async function validarEmailNoCampo() {
 			return false;
 		}
 
-		atualizarEstadoCampoEmail({
+		updateEmailFieldState({
 			mensagem: 'E-mail disponível!',
 			tipo: 'sucesso',
 			borderColor: '#2ecc71'
@@ -329,13 +365,13 @@ async function validarEmailNoCampo() {
 		return true;
 
 	} catch (error) {
-        console.error('Erro na verificação:', error);
-        atualizarEstadoCampoEmail({
+		console.error('Erro na verificação:', error);
+		updateEmailFieldState({
 			mensagem: 'Erro de conexão ao verificar a disponibilidade do e-mail.',
 			tipo: 'erro'
 		});
-        return false;
-    }
+		return false;
+	}
 }
 
 
@@ -344,12 +380,12 @@ const emailInput = document.getElementById('reg-email');
 if (emailInput){
 	
 	emailInput.addEventListener('blur', async () => {
-		await validarEmailNoCampo();
+		await validateEmailField();
 	});
 
 	
 	emailInput.addEventListener('input', () => {
-		limparEstadoCampoEmail();
+		clearEmailFieldState();
 	});
 }
 
@@ -363,10 +399,10 @@ if(registerForm){
 	  event.preventDefault();
 
 
-	formularioValido = validarFormulario();
-	// passwordUpper = tamanhoSenhaValido();
+	formIsValid = validateForm();
+	// passwordUpper = isPasswordLengthValid();
 
-	if (!formularioValido) {
+	if (!formIsValid) {
 		return;
 	}
 
@@ -374,7 +410,7 @@ if(registerForm){
 	  // Dados do usuário a ser cadastrado
 	const userData = {
 		name: document.getElementById('reg-name').value,
-		email: normalizarEmail(document.getElementById('reg-email').value),
+		email: normalizeEmail(document.getElementById('reg-email').value),
 		password: document.getElementById('reg-password').value,
 		avatar: "https://picsum.photos/80"
 	  };
@@ -394,8 +430,8 @@ if(registerForm){
     
 		if(response.ok){
 			localStorage.setItem('userId', data.id)
-			salvarUsuarioRegistrado(data);
-			exibirMensagem('Usuário criado com sucesso! Agora faça o login', 'sucesso');
+			saveRegisteredUser(data);
+			displayMessage('Usuário criado com sucesso! Agora faça o login', 'sucesso');
 
 			// Time para o usuário ler a mensagem antes de redirecionar para a página de login
 			setTimeout(() => {
@@ -404,12 +440,12 @@ if(registerForm){
 		}
 
 		else{
-			exibirMensagem('Erro no cadastro: ' + data.message, 'erro');
+			displayMessage('Erro no cadastro: ' + data.message, 'erro');
 			console.error('Erro no cadastro:', data);
 		}
     
 	} catch (error) {
-			exibirMensagem('Erro na requisição. Verifique a sua conexão.', 'erro');
+			displayMessage('Erro na requisição. Verifique a sua conexão.', 'erro');
 			console.error('Erro na requisição:', error);
 		}
     

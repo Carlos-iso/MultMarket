@@ -53,6 +53,8 @@ async function loadApp(page) {
 		const response = await fetch(path);
 		const html = await response.text();
 		document.querySelector("#app").innerHTML = html;
+		
+		window.dispatchEvent(new CustomEvent('app:pageLoaded', { detail: { page } }));
 	} catch (error) {
 		console.error("Erro ao carregar página:", error);
 	}
