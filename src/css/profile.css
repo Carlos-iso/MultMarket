@@ -33,7 +33,7 @@
 
 .profile-card {
   width: min(470px, 100%);
-  padding: 14px 12px 10px;
+  padding: 32px;
   border-radius: 18px;
   background: var(--profile-purple);
   box-shadow: var(--profile-shadow);
@@ -61,6 +61,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  display: none;
 }
 
 .profile-home img {
@@ -74,7 +75,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -84,6 +85,7 @@
   width: 36px;
   height: 36px;
 }
+
 
 .profile-perfil {
   width: 40px;
@@ -110,13 +112,15 @@
   justify-content: center;
   border-radius: 50%;
   background: var(--profile-avatar);
-  margin-top: -45px;
+  /* margin-top: -45px; */
+  
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.121);
 }
 
 .profile-avatar {
   width: 82px;
   height: 82px;
+  padding: 20px;
   object-fit: cover;
   filter: brightness(0) invert(1);
 }
@@ -153,23 +157,6 @@
   color: rgba(255, 255, 255, 0.94);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-}
-
-.input-box{
-  position: relative;
-  width: 100%;
-}
-.profile-edit {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  width: 18px;
-  height: 18px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: all 0.3s ease-in;
-  display: block;
-  filter: brightness(0) saturate(100%);;
 }
 
 
@@ -237,6 +224,7 @@
 }
 
 .profile-button--confirm {
+  margin-top: 18px;
   background: var(--profile-cyan);
   color: #001b1a;
 }
@@ -246,6 +234,7 @@
 }
 
 .profile-button--logout {
+  margin-top: 18px;
   background: var(--profile-salmon);
   color: #ffffff;
 }
@@ -276,4 +265,11 @@
     display: flex;
     justify-content: center;
   }
+
+  /* .profile-categories {
+    display: inline-flex;
+  }
+  .profile-home {
+    display: inline-flex;
+  } */
 }

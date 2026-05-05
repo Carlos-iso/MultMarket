@@ -36,7 +36,7 @@ function fillProfile(usuario) {
 	const campoRole = document.getElementById("profile-role-field");
 	const campoPassword = document.getElementById("profile-password-field");
 
-	console.log("Dados do usuário:", usuario);
+	// console.log("Dados do usuário:", usuario);
 
 	if (titulo) {
 		titulo.textContent = `Perfil de ${normalizeText(usuario?.name, "Usuário")}`;
@@ -91,7 +91,7 @@ function patch() {
 	console.log("profile avatar applied:", avatar.src);
 }
 
-// -*-*-*- FUNÇÃO DE CARREGAMENTO DO PERFIL *-*-*-*-
+
 async function loadProfile() {
 	const token = localStorage.getItem("access_token");
 
@@ -104,7 +104,13 @@ async function loadProfile() {
 		const response = await fetch(`${URL_BASE}/auth/profile`, {
 			method: "GET",
 			headers: { Authorization: `Bearer ${token}` },
+		}).then((res) => {
+			if (res.status === 401 || res.status === 403) {
+				throw new Error("Unauthorized");
+			}
+			return res;
 		});
+		console.log("Resposta do perfil:", response);
 
 		if (!response.ok) {
 			throw new Error(
@@ -123,7 +129,6 @@ async function loadProfile() {
 
 
 
-// === Atualizar perfil (PUT /users/{id}) ===
 async function updateProfile(event) {
   if (event && event.preventDefault) event.preventDefault();
 
@@ -136,14 +141,14 @@ async function updateProfile(event) {
     return;
   }
 
-  // opcional: validação simples de email
-		if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
 		displayMessage("Invalid email address.", "erro");
     return;
   }
 
   const token = localStorage.getItem("access_token");
-		if (!token) {
+  if (!token) {
 		displayMessage("Invalid session. Please log in again.", "erro");
     window.location.href = LOGIN_PAGE;
     return;
@@ -166,7 +171,7 @@ async function updateProfile(event) {
         }
       }
     }
-
+	
     const body = {};
     if (name) body.name = name;
     if (email) body.email = email;
@@ -207,14 +212,13 @@ function initProfilePage() {
 		displayMessage("Error loading profile. Please try again.", "erro");
 	});
 
-	// Bind Confirm button to updateProfile
+	
 	const profileConfirmBtn = document.getElementById("profile-refresh");
 	if (profileConfirmBtn) {
 	profileConfirmBtn.addEventListener("click", updateProfile);
 	}
 }
 
-// Logout function
 async function doLogout() {
 	const logout = document.getElementById("profile-logout");
 
