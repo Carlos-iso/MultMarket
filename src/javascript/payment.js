@@ -1,3 +1,4 @@
+
 async function openPayment() {
     await loadApp('payment');
     await loadFooter('footer');
@@ -70,19 +71,31 @@ function initPayment() {
         });
     });
 
-    button.addEventListener('click', async () => {
-        const selected = document.querySelector('.option.selected');
-        if (!selected) {
-            alert('Selecione um método de pagamento.');
-            return;
-        }
-        button.innerText = 'Processando...';
-        button.disabled = true;
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        localStorage.removeItem('product');
-        localStorage.removeItem('itensSelecionados');
-        alert('Pagamento realizado com sucesso!');
-        document.querySelector('#footer').style.display = '';
-        goHome();
-    });
+   button.addEventListener('click', async () => {
+    const selected = document.querySelector('.option.selected');
+    if (!selected) {
+        alert('Selecione um método de pagamento.');
+        return;
+    }
+    button.innerText = 'Processando...';
+    button.disabled = true;
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    //Remove os itens comprados do carrinho
+    const origin = localStorage.getItem('paymentOrigin');
+    if (origin === 'cart') {
+        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        const comprados = JSON.parse(localStorage.getItem('itensSelecionados')) || [];
+        const idsComprados = comprados.map(i => i.id);
+        const novoCarrinho = carrinho.filter(item => !idsComprados.includes(item.id));
+        localStorage.setItem('carrinho', JSON.stringify(novoCarrinho));
+    }
+
+    localStorage.removeItem('product');
+    localStorage.removeItem('itensSelecionados');
+    localStorage.removeItem('paymentOrigin');
+    alert('Pagamento realizado com sucesso!');
+    document.querySelector('#footer').style.display = '';
+    goHome();
+});
 }

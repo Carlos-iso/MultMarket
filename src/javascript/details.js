@@ -3,58 +3,55 @@ const productId = localStorage.getItem("selectedProductId");
 let currentProduct = null;
 
 async function initDetails() {
-    setTitle("Detalhes do Produto - MultiMarket");
-    await fetchProduct();
+    const freshId = localStorage.getItem("selectedProductId");
+    await fetchProduct(freshId);
     await fetchRelatedProducts();
 
     const buyButton = document.querySelector('.btn-buy');
     if (buyButton) {
-    buyButton.addEventListener('click', () => {
-        if (!currentProduct) return;
-        localStorage.setItem('paymentOrigin', 'details');
-        openPayment();
-    });
-    
-    const cartButton = document.querySelector('.btn-cart');
-if (cartButton) {
-    cartButton.addEventListener('click', () => {
-        if (!currentProduct) return;
-        
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        
-        // verifica se o produto já está no carrinho
-        const jaExiste = carrinho.find(item => item.id === currentProduct.id);
-        
-        if (jaExiste) {
-            alert('Produto já está no carrinho!');
-            return;
-        }
-        
-        carrinho.push({
-            id: currentProduct.id,
-            title: currentProduct.title,
-            price: currentProduct.price,
-            image: currentProduct.images?.[0] || ''
+        buyButton.addEventListener('click', () => {
+            if (!currentProduct) return;
+            localStorage.setItem('paymentOrigin', 'details');
+            localStorage.setItem('product', JSON.stringify(currentProduct));
+            openPayment();
         });
-        
-        localStorage.setItem('carrinho', JSON.stringify(carrinho));
-        alert('Produto adicionado ao carrinho!');
-    });
+    }
+
+    const cartButton = document.querySelector('.btn-cart');
+    if (cartButton) {
+        cartButton.addEventListener('click', () => {
+            if (!currentProduct) return;
+
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const jaExiste = carrinho.find(item => item.id === currentProduct.id);
+
+            if (jaExiste) {
+                alert('Product already in cart!');
+                return;
+            }
+
+            carrinho.push({
+                id: currentProduct.id,
+                title: currentProduct.title,
+                price: currentProduct.price,
+                image: currentProduct.images?.[0] || ''
+            });
+
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            alert('Product added to cart!');
+        });
+    }
 }
-    
 
-}}
 // FETCH PRODUCT
-async function fetchProduct() {
-
+async function fetchProduct(id) {
     try {
-        const response = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
+        const response = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
 
-        if (!response.ok) throw new Error(`Erro ao buscar produto: ${response.status}`);
+        if (!response.ok) throw new Error(`Error fetching product: ${response.status}`);
 
         const product = await response.json();
         currentProduct = product;
-        setTitle(`${product.title} - MultiMarket`);
 
         document.querySelector('.product-title').textContent = product.title;
         document.querySelector('.product-price').textContent = `R$ ${toCoin(product.price)}`;
@@ -90,21 +87,20 @@ async function fetchProduct() {
         imagesContainer.appendChild(thumbnailContainer);
 
     } catch (error) {
-        console.error('Erro ao carregar produto:', error);
+        console.error('Error loading product:', error);
     }
 }
-
-
 
 // RELATED PRODUCTS
 async function fetchRelatedProducts() {
     try {
         const response = await fetch(`https://api.escuelajs.co/api/v1/products?limit=8`);
 
-        if (!response.ok) throw new Error(`Erro ao buscar produtos relacionados: ${response.status}`);
+        if (!response.ok) throw new Error(`Error fetching related products: ${response.status}`);
 
         const products = await response.json();
         const grid = document.getElementById('related-grid');
+        grid.innerHTML = '';
 
         products.slice(0, 8).forEach(product => {
             const card = document.createElement('div');
@@ -131,7 +127,6 @@ async function fetchRelatedProducts() {
         });
 
     } catch (error) {
-        console.error('Erro ao carregar produtos relacionados:', error);
+        console.error('Error loading related products:', error);
     }
 }
-
