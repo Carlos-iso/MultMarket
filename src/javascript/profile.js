@@ -91,8 +91,9 @@ function patch() {
 	console.log("profile avatar applied:", avatar.src);
 }
 
-
 async function loadProfile() {
+	setTitle("Perfil - MultiMarket");
+	await loadFooter("footer");
 	const token = localStorage.getItem("access_token");
 
 	if (!token) {
@@ -120,6 +121,7 @@ async function loadProfile() {
 
 		const data = await response.json();
 		fillProfile(data);
+		setTitle(`Perfil de ${data?.name || "Usuário"} - MultiMarket`);
 	} catch (error) {
 		console.error("Erro ao carregar perfil:", error);
 		displayMessage("Error loading profile. Please log in again.", "erro");

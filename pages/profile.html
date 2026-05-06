@@ -1,132 +1,71 @@
 <div class="profile-page">
 
+  <main class="profile-main">
+    <section class="profile-card">
 
-<!-- Conteúdo principal -->
-<main class="profile-main">
-	<section class="profile-card" aria-labelledby="profile-title">
-		<!-- Avatar do usuário -->
-		<div class="profile-avatar-wrap">
-			<img
-				src="../src/assets/icons/sharp-person.png"
-				alt="Foto do usuário"
-				class="profile-avatar"
-				id="profile-avatar"
-			/>
-		</div>
+      <!-- Avatar -->
+      <div class="profile-avatar-wrap">
+        <img src="../src/assets/icons/perfil.svg" class="profile-avatar">
+      </div>
 
-		<h1 id="profile-title" class="profile-name"></h1>
+      <h1 class="profile-name">PERFIL DE JHON</h1>
 
-		<!-- Formulário de edição do perfil -->
-		<form class="profile-form" id="profile-form">
+      <form class="profile-form">
 
-			<div class="input-box">
-				<label class="profile-field">
-					<span>ID</span>
-					<input type="text" id="profile-id" readonly />
-					<img src="src/assets/icons/edit.svg" alt="editar" class="edit-icon" id="edit-id-btn" />
-					
-				</label>
-			</div>
+        <!-- ID -->
+        <div class="profile-field">
+          <label>ID</label>
+          <div class="input-wrapper">
+            <input type="text" value="1" readonly>
+            <img src="src/assets/icons/edit.svg" class="edit-icon">
+          </div>
+        </div>
 
-			<div class="input-box">
-				<label class="profile-field">
-					<span>Username</span>
-					<input type="text" id="profile-name-field" readonly />
-					<img src="src/assets/icons/edit.svg" alt="editar" class="edit-icon" id="edit-name-btn" />
-				
-				</label>
+        <!-- Username -->
+        <div class="profile-field">
+          <label>USERNAME</label>
+          <div class="input-wrapper">
+            <input type="text" value="Jhon" readonly>
+            <img src="src/assets/icons/edit.svg" class="edit-icon">
+          </div>
+        </div>
 
-			</div>
+        <!-- Email -->
+        <div class="profile-field">
+          <label>E-MAIL</label>
+          <div class="input-wrapper">
+            <input type="email" value="jhon@mail.com" readonly>
+            <img src="src/assets/icons/edit.svg" class="edit-icon">
+          </div>
+        </div>
 
-			<div class="input-box">
+        <!-- Password -->
+        <div class="profile-field">
+          <label>PASSWORD</label>
+          <div class="input-wrapper">
+            <input type="password" value="12345678" readonly>
+            <img src="src/assets/icons/edit.svg" class="edit-icon">
+          </div>
+        </div>
 
-				<label class="profile-field profile-field--full">
-					<span>E-mail</span>
-					<input type="email" id="profile-email-field" readonly />
-					<img src="src/assets/icons/edit.svg" alt="editar" class="edit-icon" id="edit-email-btn" />
+        <!-- Role -->
+        <div class="profile-field">
+          <label>ROLE</label>
+          <div class="input-wrapper">
+            <input type="text" value="customer" readonly>
+            <img src="src/assets/icons/edit.svg" class="edit-icon">
+          </div>
+        </div>
 
-				</label>
-			</div>
+      </form>
 
-			<div class="input-box">
+      <!-- Botões -->
+      <div class="profile-actions">
+        <button class="btn confirm">CONFIRMAR</button>
+        <button class="btn logout">SAIR</button>
+      </div>
 
-				<label class="profile-field profile-field--full">
-					<span>Password</span>
-					<input type="password" id="profile-password-field" readonly />
-					<img src="src/assets/icons/edit.svg" alt="editar" class="edit-icon" id="edit-password-btn" />
-				</label>
-			</div>
+    </section>
+  </main>
 
-
-			<div class="input-box">
-				<label class="profile-field profile-field--full">
-					<span>Role</span>
-					<input type="text" id="profile-role-field" readonly />
-					<img src="src/assets/icons/edit.svg" alt="editar" class="edit-icon" id="edit-role-btn" />
-				</label>
-			</div>
-
-			
-		</form>
-
-		<!-- Mensagem de feedback -->
-		<p
-			id="profile-message"
-			class="profile-message"
-			role="status"
-			aria-live="polite"
-		></p>
-
-		<!-- Ações do perfil -->
-		<div class="profile-actions">
-			<button
-				type="button"
-				onclick="updateProfile()"
-				id="profile-refresh"
-				class="profile-button profile-button--confirm"
-			>
-				Confirmar
-			</button>
-			<button
-				type="button"
-				onclick="doLogout()"
-				id="profile-logout"
-				class="profile-button profile-button--logout"
-			>
-				Sair
-			</button>
-		</div>
-
-		<!-- Rodapé com navegação  -->
-
-		<div class="profile-section">
-			<button
-				type="button"
-				id="nav-shop"
-				class="profile-home"
-				aria-label="Início"
-			>
-				<img src="../src/assets/icons/inicio.svg" alt="Início" />
-			</button>
-
-			<button
-				type="button"
-				id="nav-categorias"
-				class="profile-categories"
-				aria-label="Categorias"
-			>
-				<img src="../src/assets/icons/categorias.svg" alt="Categorias" />
-			</button>
-
-			<!-- <button
-				type="button"
-				id="nav-perfil"
-				class="profile-perfil"
-				aria-label="Perfil"
-			>
-				<img src="../src/assets/icons/perfil.svg" alt="Perfil" />
-			</button> -->
-		</div>
-	</section>
-</main>
 </div>

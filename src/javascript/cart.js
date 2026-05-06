@@ -28,7 +28,7 @@ function renderCarrinho() {
   if (carrinho.length === 0) {
     list.innerHTML = `
             <div class="carrinho-vazio">
-            <img src="../src/assets/icon/cartempty.svg" alt="Carrinho vazio">
+            <img src="../src/assets/icons/cartempty.svg" alt="Carrinho vazio">
                 <p>Nenhum produto adicionado ao carrinho.</p>
             </div>
         `;
@@ -82,6 +82,7 @@ function setupCartEvents() {
 }
 
 async function openCart() {
+  setTitle("Carrinho - MultiMarket");
   await loadApp("cart");
   await loadFooter("footer-cart");
   setupCartEvents();

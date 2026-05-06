@@ -19,4 +19,10 @@ function goHome() {
 	window.location.href = "/";
 }
 
+function setTitle(title) {
+  const titleElement = document.title ? document.querySelector("title") : null;
+  if (!titleElement) return;
+  titleElement.textContent = title;
+}
+
 initApp();

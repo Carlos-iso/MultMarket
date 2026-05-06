@@ -37,6 +37,7 @@ body {
     align-items: center;
     justify-content: center;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .logo-icon img {

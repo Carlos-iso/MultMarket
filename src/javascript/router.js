@@ -1,13 +1,13 @@
 const components = {
-	header: "/pages/header.html",
-	cart: "/pages/cart.html",
-	home: "/index.html",
-	catalog: "/pages/catalog.html",
-	profile: "/pages/profile.html",
-	footer: "/pages/footer.html",
+	"header": "/pages/header.html",
+	"cart": "/pages/cart.html",
+	"home": "/index.html",
+	"catalog": "/pages/catalog.html",
+	"profile": "/pages/profile.html",
+	"footer": "/pages/footer.html",
 	"footer-cart": "/pages/footer-cart.html",
-	details: "/pages/details.html",
-	payment: "/pages/payment.html",
+	"details": "/pages/details.html",
+	"payment": "/pages/payment.html",
 	"footer-payment": "/pages/footer-payment.html",
 };
 
