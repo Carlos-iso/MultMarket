@@ -6,6 +6,7 @@ async function initApp() {
 		return;
 	}
 
+	setTitle("MultiMarket - Sua loja online");
 	await loadHeader("header");
 	await loadApp("catalog");
 	await loadFooter("footer");
@@ -14,15 +15,15 @@ async function initApp() {
 }
 
 function goHome() {
-	document.querySelector('#footer').style.display = ''; // ← mostra o footer
-    openCatalog();
+	document.querySelector("#footer").style.display = ""; // ← mostra o footer
+	openCatalog();
 	window.location.href = "/";
 }
 
 function setTitle(title) {
-  const titleElement = document.title ? document.querySelector("title") : null;
-  if (!titleElement) return;
-  titleElement.textContent = title;
+	const titleElement = document.title ? document.querySelector("title") : null;
+	if (!titleElement) return;
+	titleElement.textContent = title;
 }
 
 initApp();

@@ -3,11 +3,10 @@ const productId = localStorage.getItem("selectedProductId");
 let currentProduct = null;
 
 async function initDetails() {
+    setTitle("Detalhes do Produto - MultiMarket");
     await fetchProduct();
     await fetchRelatedProducts();
 
-
-    
     const buyButton = document.querySelector('.btn-buy');
     if (buyButton) {
     buyButton.addEventListener('click', () => {
@@ -55,6 +54,7 @@ async function fetchProduct() {
 
         const product = await response.json();
         currentProduct = product;
+        setTitle(`${product.title} - MultiMarket`);
 
         document.querySelector('.product-title').textContent = product.title;
         document.querySelector('.product-price').textContent = `R$ ${toCoin(product.price)}`;
