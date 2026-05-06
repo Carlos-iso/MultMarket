@@ -1,9 +1,10 @@
-if (typeof URL_BASE === "undefined") {
-	const URL_BASE = "https://api.escuelajs.co/api/v1";
+if (typeof URL_BASE === 'undefined') {
+    var URL_BASE = 'https://api.escuelajs.co/api/v1';
 }
+
 const LOGIN_PAGE = "/pages/login.html";
 
-function exibirMensagem(texto, tipo = "erro") {
+function displayMessage(texto, tipo = "erro") {
 	const msgElement = document.getElementById("profile-message");
 
 	if (!msgElement) {
@@ -20,40 +21,45 @@ function exibirMensagem(texto, tipo = "erro") {
 	}, 3500);
 }
 
-function normalizarTexto(valor, fallback = "") {
+function normalizeText(valor, fallback = "") {
 	return valor === null || valor === undefined || valor === ""
 		? fallback
 		: String(valor);
 }
 
-function preencherPerfil(usuario) {
+function fillProfile(usuario) {
 	const avatar = document.getElementById("profile-avatar");
 	const titulo = document.getElementById("profile-title");
 	const campoId = document.getElementById("profile-id");
 	const campoName = document.getElementById("profile-name-field");
 	const campoEmail = document.getElementById("profile-email-field");
 	const campoRole = document.getElementById("profile-role-field");
+	const campoPassword = document.getElementById("profile-password-field");
 
-	console.log("Dados do usuário:", usuario);
+	// console.log("Dados do usuário:", usuario);
 
 	if (titulo) {
-		titulo.textContent = `Perfil de ${normalizarTexto(usuario?.name, "Usuário")}`;
+		titulo.textContent = `Perfil de ${normalizeText(usuario?.name, "Usuário")}`;
 	}
 
 	if (campoId) {
-		campoId.value = `${normalizarTexto(usuario?.id, "-")}`;
+		campoId.value = `${normalizeText(usuario?.id, "-")}`;
 	}
 
 	if (campoName) {
-		campoName.value = `${normalizarTexto(usuario?.name, "-")}`;
+		campoName.value = `${normalizeText(usuario?.name, "-")}`;
 	}
 
 	if (campoEmail) {
-		campoEmail.value = `${normalizarTexto(usuario?.email, "-")}`;
+		campoEmail.value = `${normalizeText(usuario?.email, "-")}`;
 	}
 
 	if (campoRole) {
-		campoRole.value = `${normalizarTexto(usuario?.role, "-")}`;
+		campoRole.value = `${normalizeText(usuario?.role, "-")}`;
+	}
+
+	if (campoPassword) {
+		campoPassword.value = "********";
 	}
 
 	if (avatar) {
@@ -61,17 +67,16 @@ function preencherPerfil(usuario) {
 			usuario && usuario.avatar && usuario.avatar.trim()
 				? usuario.avatar
 				: "https://api.lorem.space/image/face?w=200&h=200";
-		console.log("profile avatar about to set to:", avatarUrl);
+
 		avatar.src = avatarUrl;
 
-		const fallbackAvatar = "../src/assets/icons/sharp-person.png";
+		const fallbackAvatar = "../src/assets/icon/profile-icon.svg";
 		avatar.onerror = function () {
-			console.warn("Avatar failed to load, switching to fallback:", avatarUrl);
 			this.onerror = null;
 			this.src = fallbackAvatar;
 		};
 		avatar.alt = usuario?.name ? `Foto de ${usuario.name}` : "Foto do usuário";
-		console.log("profile avatar applied:", avatar.src);
+		
 	}
 }
 
@@ -86,8 +91,8 @@ function patch() {
 	console.log("profile avatar applied:", avatar.src);
 }
 
-// -*-*-*- FUNÇÃO DE CARREGAMENTO DO PERFIL *-*-*-*-
-async function carregarPerfil() {
+
+async function loadProfile() {
 	const token = localStorage.getItem("access_token");
 
 	if (!token) {
@@ -99,7 +104,13 @@ async function carregarPerfil() {
 		const response = await fetch(`${URL_BASE}/auth/profile`, {
 			method: "GET",
 			headers: { Authorization: `Bearer ${token}` },
+		}).then((res) => {
+			if (res.status === 401 || res.status === 403) {
+				throw new Error("Unauthorized");
+			}
+			return res;
 		});
+		console.log("Resposta do perfil:", response);
 
 		if (!response.ok) {
 			throw new Error(
@@ -108,25 +119,107 @@ async function carregarPerfil() {
 		}
 
 		const data = await response.json();
-		preencherPerfil(data);
+		fillProfile(data);
 	} catch (error) {
 		console.error("Erro ao carregar perfil:", error);
-		exibirMensagem("Erro ao carregar perfil. Faça login novamente.", "erro");
+		displayMessage("Error loading profile. Please log in again.", "erro");
 		window.location.href = LOGIN_PAGE;
 	}
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-	try {
-		await carregarPerfil();
-	} catch (error) {
-		console.error("Erro ao carregar perfil:", error);
-		exibirMensagem("Erro ao carregar perfil. Tente novamente.", "erro");
-	}
-});
 
-// Função de logout
-function fazerLogout() {
+
+async function updateProfile(event) {
+  if (event && event.preventDefault) event.preventDefault();
+
+  const id = document.getElementById("profile-id")?.value;
+  const name = document.getElementById("profile-name-field")?.value?.trim();
+  const email = document.getElementById("profile-email-field")?.value?.trim();
+
+  if (!id) {
+	displayMessage("User ID not found.", "erro");
+    return;
+  }
+
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+		displayMessage("Invalid email address.", "erro");
+    return;
+  }
+
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+		displayMessage("Invalid session. Please log in again.", "erro");
+    window.location.href = LOGIN_PAGE;
+    return;
+  }
+  
+  try {
+  
+    const currentEmail = ""; 
+    if (email && email !== currentEmail) {
+      const availRes = await fetch(`${URL_BASE}/users/is-available`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (availRes.ok) {
+        const availData = await availRes.json();
+				if (availData?.isAvailable === false) {
+					displayMessage("Email already registered. Please use a different one.", "erro");
+          return;
+        }
+      }
+    }
+	
+    const body = {};
+    if (name) body.name = name;
+    if (email) body.email = email;
+
+    const response = await fetch(`${URL_BASE}/users/${encodeURIComponent(id)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      const updated = await response.json();
+      
+      fillProfile(updated);
+	displayMessage("Profile updated successfully.", "sucesso");
+    } else {
+      const err = await response.json().catch(() => null);
+	displayMessage("Update failed: " + (err?.message || response.statusText), "erro");
+      console.error("Erro updatePerfil:", err || response);
+    }
+  } catch (error) {
+    console.error("Erro updatePerfil:", error);
+	displayMessage("Error updating profile. Please try again.", "erro");
+  }
+}
+
+
+
+function initProfilePage() {
+	setupNavigation();
+	doLogout();
+
+	loadProfile().catch((error) => {
+		console.error("Erro ao carregar perfil:", error);
+		displayMessage("Error loading profile. Please try again.", "erro");
+	});
+
+	
+	const profileConfirmBtn = document.getElementById("profile-refresh");
+	if (profileConfirmBtn) {
+	profileConfirmBtn.addEventListener("click", updateProfile);
+	}
+}
+
+async function doLogout() {
 	const logout = document.getElementById("profile-logout");
 
 	if (logout) {
@@ -134,7 +227,7 @@ function fazerLogout() {
 			localStorage.removeItem("access_token");
 			localStorage.removeItem("refresh_token");
 			localStorage.removeItem("userId");
-			exibirMensagem("Logout realizado com sucesso.", "sucesso");
+			displayMessage("Logged out successfully.", "sucesso");
 			window.location.href = LOGIN_PAGE;
 		});
 	}
@@ -148,13 +241,13 @@ function setupNavigation() {
 
 	if (navShop) {
 		navShop.addEventListener("click", () => {
-			window.location.href = "../shop-window.html";
+			window.location.href = "index.html";
 		});
 	}
 
 	if (navCategorias) {
 		navCategorias.addEventListener("click", () => {
-			window.location.href = "./products.html";
+			window.location.href = "index.html";
 		});
 	}
 
@@ -165,8 +258,17 @@ function setupNavigation() {
 	}
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-	setupNavigation();
+
+
+
+window.addEventListener('app:pageLoaded', (e) => {
+	if (e.detail?.page === 'profile') initProfilePage();
 });
 
-fazerLogout();
+if (document.readyState !== 'loading' && document.getElementById('profile-avatar')) {
+	initProfilePage();
+} else {
+	document.addEventListener('DOMContentLoaded', () => {
+		if (document.getElementById('profile-avatar')) initProfilePage();
+	});
+}
